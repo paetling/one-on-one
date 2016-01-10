@@ -38,6 +38,8 @@ class GCPair(object):
 
     @staticmethod
     def total_people(group_dict, exclude_groups=[]):
+        if not group_dict:
+            return 0
         return reduce(lambda x, y: x+y,
                       map(lambda tup: len(tup[1]),
                           filter(lambda tup: tup[0] not in exclude_groups,
