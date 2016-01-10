@@ -65,7 +65,7 @@ class GCPair(object):
                 group = copy_group_dict[most_people_group_key]
                 while len(group) > 1:
                     person1 = group.pop(0)
-                    person2 = random_from_group_dict(copy_group_dict, exclude_people=[person1])
+                    person2 = self.random_from_group_dict(copy_group_dict, exclude_people=[person1])
                     pairs.append((person1, person2))
                 if len(group) > 0:
                     print 'Not enough people. So this week {} does not have a pair'.format(group[0])
@@ -74,7 +74,7 @@ class GCPair(object):
                 for person1 in copy_group_dict[most_people_group_key]:
                     total_people_minus_group = self.total_people(copy_group_dict, exclude_groups=[most_people_group_key])
                     if total_people_minus_group > 0:
-                        person2 = random_from_group_dict(copy_group_dict, exclude_groups=[most_people_group_key])
+                        person2 = self.random_from_group_dict(copy_group_dict, exclude_groups=[most_people_group_key])
                         pairs.append((person1, person2))
                     else:
                         break
