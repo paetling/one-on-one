@@ -1,4 +1,4 @@
-from groups import GCGroup
+from group import GCGroup
 
 
 group = GCGroup()
