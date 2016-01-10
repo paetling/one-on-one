@@ -11,7 +11,7 @@ class Group(object):
         raise NotImplementedError
 
 class GCGroup(Group):
-    GC_URL = 'https://web.archive.org/web/20150319083649/https://gc.com/team'
+    GC_URL = 'https://gc.com/team'
 
     def get(self):
         return_dict = {}
