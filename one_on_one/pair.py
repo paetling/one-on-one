@@ -55,6 +55,15 @@ class GCPair(object):
             del group_dict[remove_key]
 
     def get_pairs(self, group_dict):
+        """
+            This function implements a random of grouping of people across teams. The algorithm
+            is as follows:
+                1. Take the group with the most people
+                2. Randomly match each person in the group with someone in a different group
+                3. Once this group is out of people, go back to step 1
+                4. If you get to a situation at the end where one group still has people left,
+                    randomly match those people to each other.
+        """
         pairs = []
         groups = group_dict.keys()
         copy_group_dict = deepcopy(group_dict)
