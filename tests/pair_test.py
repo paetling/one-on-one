@@ -151,23 +151,16 @@ class TestGCGroup(TestCase):
                       'other': ['girl6', 'guy7', 'girl7']}
         pairs = self.gc_pair.get_pairs(group_dict)
         self.assertEquals(len(pairs), 7)
-
+        print pairs
         for pair in pairs:
             if pair[0] in group_dict['engineers']:
                 self.assertIn(pair[1], group_dict['design'] + group_dict['marketing'] + group_dict['other'])
 
-        pair5 = pairs[5]
-        if pair5[0] in group_dict['design']:
-            next_key = 'design'
-        elif pair5[0] in group_dict['marketing']:
-            next_key = 'marketing'
-        else:
-            next_key = 'other'
-
-        key_map = {'design': group_dict['marketing'] + group_dict['other'],
-                   'marketing': group_dict['design'] + group_dict['other'],
-                   'other': group_dict['marketing'] + group_dict['design'],}
-
         for pair in pairs:
-            if pair[0] in group_dict[next_key]:
-                self.assertIn(pair[1], key_map[next_key])
+            self.assertIn(pair[1], group_dict['design'] + group_dict['marketing'] + group_dict['other'])
+
+    def test_get_pairs_6(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2']}
+        pairs = self.gc_pair.get_pairs(group_dict)
+        self.assertEquals(len(pairs), 2)
