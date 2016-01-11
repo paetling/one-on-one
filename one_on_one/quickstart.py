@@ -1,32 +1,11 @@
-from __future__ import print_function
 import httplib2
-import os
 
 from apiclient import discovery
-import oauth2client
-from oauth2client import client
-from oauth2client import tools
 
 
 from oauth2client.client import SignedJwtAssertionCredentials
 
-
-import datetime
-
-try:
-    import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-except ImportError:
-    flags = None
-
-SCOPES = ['https://www.googleapis.com/auth/calendar',
-          'https://www.googleapis.com/auth/admin.directory.user.readonly']
-CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'Google Calendar API Python Quickstart'
-
-
 def get_credentials():
-    from oauth2client.client import SignedJwtAssertionCredentials
     client_email = 'one-on-one-account@windy-raceway-118617.iam.gserviceaccount.com'
     with open("ConvertedPrivateKey.pem") as f:
         private_key = f.read()

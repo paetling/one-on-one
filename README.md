@@ -83,5 +83,5 @@ In [163]: service1.events().insert(calendarId='gamechanger.io_8ag52p72ocos9b61g7
 
 
 
-I have the right to add calendar events just not guests
+I have the right to add calendar events just not guests -- do not pass ids in attendees jsut pass emails
 cannot set creator properly
