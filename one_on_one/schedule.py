@@ -60,6 +60,14 @@ class GCSchedule(object):
                                         sendNotifications=True).execute()
 
     def schedule(self, pairs):
+        """
+            This schedule function is built around Googles Api. Its goal is to schedule
+            google calendar events for each set of pairs. To do this it uses the following
+            api resources:
+                Google Calendar: https://developers.google.com/google-apps/calendar/?hl=en
+                Google Directory: https://developers.google.com/admin-sdk/directory/
+            It also makes use of Google Service Accounts: https://developers.google.com/identity/protocols/OAuth2ServiceAccount
+        """
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         calendar_access = discovery.build('calendar', 'v3', http=http)
