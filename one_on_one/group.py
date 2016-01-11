@@ -14,6 +14,10 @@ class GCGroup(Group):
     GC_URL = 'https://gc.com/team'
 
     def get(self):
+        """
+            This method does a simply web scrape of GC_URL with an attempt to grab each employee at
+            GameChanger's name
+        """
         return_dict = {}
         page = requests.get(self.GC_URL)
         html_element = html.fromstring(page.content)
