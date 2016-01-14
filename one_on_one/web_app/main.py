@@ -1,4 +1,4 @@
-import json
+import json, os
 from flask import Flask, render_template, request
 import arrow
 
@@ -40,4 +40,4 @@ def schedule():
     return render_template("schedule.html")
 
 if __name__ == "__main__":
-    app.run(port=80)
+    app.run(host=os.getenv('ONE_ON_ON_IP') or '127.0.0.1', port=os.getenv('ONE_ON_ON_PORT') or 80)
