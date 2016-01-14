@@ -23,7 +23,10 @@ def people():
 @app.route('/pairs', methods=["POST"])
 def pairs():
     group = json.loads(request.form["group"])
-    pairs = pair_instance.get_pairs(group)
+    exclude_list_string = request.form["exclude_list"].rstrip('\n\t ')
+    exclude_list = map(lambda input: input.strip(), exclude_list_string.split(',') if exclude_list_string else [])\
+
+    pairs = pair_instance.get_pairs(group, exclude_list=exclude_list)
     return render_template("pairs.html", pairs=pairs, pairs_string=json.dumps(pairs))
 
 @app.route('/schedule', methods=["POST"])

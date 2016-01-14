@@ -79,8 +79,7 @@ class GCPair(Pair):
 
         while (len(copy_group_dict.keys()) > 0):
             most_people_group_key = self.get_group_key_with_most_people(copy_group_dict)
-            print 'group dict'
-            print copy_group_dict
+
             if len(copy_group_dict.keys()) == 1:
                 group = copy_group_dict[most_people_group_key]
                 while len(group) > 1:

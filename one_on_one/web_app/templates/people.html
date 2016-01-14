@@ -22,14 +22,22 @@
                     {% endfor %}
             </font>
         </div>
-        <row>
-            <div class="col-md-5"></div>
             <div>
                 <form action="{{ url_for('pairs') }}" method="post">
+                    <row>
+                        <div class="col-md-4"></div>
+                        <div><strong>Should anyone not be included in one on ones?</strong></div>
+                    </row>
+                    <row>
+                        <div class="col-md-3"></div>
+                        <textarea name="exclude_list" placeholder="Enter a comma separated list of full names" rows="4" cols="70"></textarea><br>
+                    </row>
                     <input type="hidden" name="group" value="{{ group_string }}"></input>
-                    <input type="submit" value="Pair People" class="btn-lg btn-primary">
+                    <row>
+                        <div class="col-md-5"></div>
+                        <input type="submit" value="Pair People" class="btn-lg btn-primary">
+                    </row>
                 </form>
             </div>
-        </row>
     </div>
 {% endblock %}
