@@ -164,3 +164,27 @@ class TestGCGroup(TestCase):
                       'marketing': ['girl2']}
         pairs = self.gc_pair.get_pairs(group_dict)
         self.assertEquals(len(pairs), 2)
+
+    def test_remove_excluded_people_1(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2']}
+        expected_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                         'marketing': ['girl2']}
+        self.gc_pair.remove_excluded_people(group_dict, [])
+        self.assertEquals(group_dict, expected_dict)
+
+    def test_remove_excluded_people_2(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2']}
+        expected_dict = {'engineers': [],
+                         'marketing': []}
+        self.gc_pair.remove_excluded_people(group_dict, ['guy1', 'girl1', 'guy2', 'girl2'])
+        self.assertEquals(group_dict, expected_dict)
+
+    def test_remove_excluded_people_3(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2']}
+        expected_dict = {'engineers': ['guy1', 'guy2'],
+                         'marketing': []}
+        self.gc_pair.remove_excluded_people(group_dict, ['girl1', 'girl2'])
+        self.assertEquals(group_dict, expected_dict)

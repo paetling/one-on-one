@@ -2,12 +2,13 @@ from copy import deepcopy
 import random
 
 class Pair(object):
-    def get_pairs(self, group_dict):
+    def get_pairs(self, group_dict, exclude_list=[]):
         """
             This function is made to be subclassed. It takes
             in a dictionary with a structure described in Group.get().
             It outputs a list of tuples. Each tuple contains 2 names who should
             be paired together for a meeting
+            Exclude_list is a list of names that should not be included in the pairings
         """
         raise NotImplementedError
 
@@ -54,7 +55,14 @@ class GCPair(object):
         for remove_key in remove_keys:
             del group_dict[remove_key]
 
-    def get_pairs(self, group_dict):
+    @staticmethod
+    def remove_excluded_people(group_dict, exclude_list):
+        for person in exclude_list:
+            for group, people in group_dict.iteritems():
+                if person in people:
+                    people.remove(person)
+
+    def get_pairs(self, group_dict, exclude_list=[]):
         """
             This function implements a random of grouping of people across teams. The algorithm
             is as follows:
@@ -67,6 +75,7 @@ class GCPair(object):
         pairs = []
         groups = group_dict.keys()
         copy_group_dict = deepcopy(group_dict)
+        self.remove_excluded_people(copy_group_dict, exclude_list)
 
         while (len(copy_group_dict.keys()) > 0):
             most_people_group_key = self.get_group_key_with_most_people(copy_group_dict)
