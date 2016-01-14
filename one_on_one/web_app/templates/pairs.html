@@ -2,22 +2,32 @@
 
 {% block body %}
     <div class="container">
-        <div class="jumbotron">
+        <div class="jumbotron" style="background:#5bc0de !important">
             <h1>Peer One on One</h1>
+            <p>This page lists a proposed list of all pairs</p>
         </div>
-        <h2>
-            Pairs of people for one one ones
-        </h2>
         <font size="+2">
-            <p class="col-lg-6 pre-scrollable">
+            <div>
                 {% for pair in pairs %}
-                    {{ pair[0] }} <--> {{ pair[1] }} <br>
+                    <row>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-3">{{ pair[0] }}</div>
+                        <div class="col-md-3"><----------------></div>
+                        <div class="col-md-3">{{ pair[1] }}</div>
+                    </row>
+                    <br>
                 {% endfor %}
-            </p>
+            </div>
         </font>
-        <form action="{{ url_for('schedule') }}" method="post">
-            <input type="hidden" name="pairs" value="{{ pairs_string }}"></input>
-            <input type="submit" value="Schedule Meetings" class="btn-lg btn-primary">
-        </form>
+        <br>
+        <row>
+            <div class="col-md-5"></div>
+            <div class="col-md-1">
+                <form action="{{ url_for('schedule') }}" method="post">
+                    <input type="hidden" name="pairs" value="{{ pairs_string }}"></input>
+                    <input type="submit" value="Schedule Meetings" class="btn-lg btn-primary">
+                </form>
+            </div>
+        </row>
     </div>
 {% endblock %}

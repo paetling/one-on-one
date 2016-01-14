@@ -10,16 +10,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-
   </head>
+
   <body>
     {% block body %}
         <div class="container">
-            <div class="jumbotron">
+            <div class="jumbotron" style="background:#5bc0de !important">
                 <h1>Peer One on One</h1>
                 <p>This tool should be used to schedule one on ones at your company. Please click the 'Get Started' button below to get the list of people available to be paired for a one on one.</p>
             </div>
-            <a href="/people" class="btn-lg btn-primary">Get Started</a>
+            <row>
+                <div class="col-md-5"></div>
+                <a href="/people" class="btn-lg btn-primary">Get Started</a>
+            </row>
+
         </div>
     {% endblock %}
 

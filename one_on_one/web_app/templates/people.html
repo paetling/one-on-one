@@ -2,24 +2,34 @@
 
 {% block body %}
     <div class="container">
-        <div class="jumbotron">
+        <div class="jumbotron" style="background:#5bc0de !important">
             <h1>Peer One on One</h1>
+            <p>This page lists all people available for peer one on ones.</p>
         </div>
-        <h2>
-            People available for one on ones
-        </h2>
-        <font size="+2">
-            <p class="col-lg-6 pre-scrollable">
-                {% for group, people in group.iteritems() %}<strong>{{ group }}:</strong><br>
-                    {% for person in people %}
-                        {{ person }}<br>
+        <div>
+            <font size="+2">
+                    {% for group, people in group.iteritems() %}
+                        <div>
+                            <strong>{{ group }}:</strong><br>
+                            {% for person in people %}
+                                {{ person }}{% if not loop.last %},{% endif %}
+                                {% if loop.index % 6 == 0 %}
+                                    <br>
+                                {% endif %}
+                            {% endfor %}
+                            <br><br>
+                        </div>
                     {% endfor %}
-                {% endfor %}
-            </p>
-        </font>
-        <form action="{{ url_for('pair') }}" method="post">
-            <input type="hidden" name="group" value="{{ group_string }}"></input>
-            <input type="submit" value="Pair People" class="btn-lg btn-primary">
-        </form>
+            </font>
+        </div>
+        <row>
+            <div class="col-md-5"></div>
+            <div>
+                <form action="{{ url_for('pair') }}" method="post">
+                    <input type="hidden" name="group" value="{{ group_string }}"></input>
+                    <input type="submit" value="Pair People" class="btn-lg btn-primary">
+                </form>
+            </div>
+        </row>
     </div>
 {% endblock %}
