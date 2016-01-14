@@ -2,6 +2,13 @@ from copy import deepcopy
 import random
 
 class Pair(object):
+    @staticmethod
+    def remove_excluded_people(group_dict, exclude_list):
+        for person in exclude_list:
+            for group, people in group_dict.iteritems():
+                if person in people:
+                    people.remove(person)
+
     def get_pairs(self, group_dict, exclude_list=[]):
         """
             This function is made to be subclassed. It takes
@@ -13,7 +20,7 @@ class Pair(object):
         raise NotImplementedError
 
 
-class GCPair(object):
+class GCPair(Pair):
     @staticmethod
     def random_from_group_dict(group_dict, exclude_groups=[], exclude_people=[]):
         filtered_group_tuples = filter(lambda tup: tup[0] not in exclude_groups and len(tup[1]) > 0,
@@ -54,13 +61,6 @@ class GCPair(object):
                 remove_keys.append(key)
         for remove_key in remove_keys:
             del group_dict[remove_key]
-
-    @staticmethod
-    def remove_excluded_people(group_dict, exclude_list):
-        for person in exclude_list:
-            for group, people in group_dict.iteritems():
-                if person in people:
-                    people.remove(person)
 
     def get_pairs(self, group_dict, exclude_list=[]):
         """

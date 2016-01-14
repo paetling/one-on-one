@@ -12,7 +12,7 @@ class Schedule(object):
         """
         raise NotImplementedError
 
-class GCSchedule(object):
+class GCSchedule(Schedule):
     @staticmethod
     def get_credentials():
         client_email = 'one-on-one-account@windy-raceway-118617.iam.gserviceaccount.com'
