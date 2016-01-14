@@ -74,7 +74,7 @@ class GCSchedule(Schedule):
             meeting_end = str(datetime(now.year, now.month, now.day + 7, 11, 0, 0))
         else:
             meeting_start = str(meeting_dt)
-            meeting_end = str(datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute + 30))
+            meeting_end = str(datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute + 30, meeting_dt.second))
 
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
