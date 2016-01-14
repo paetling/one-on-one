@@ -5,10 +5,11 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from apiclient import discovery
 
 class Schedule(object):
-    def schedule(self, pairs):
+    def schedule(self, pairs, meeting_dt=None):
         """ This method is made to be overwritten by subclasses.
             It should take in a list of pairs, and schedule a meeting between
             the pairs of people
+            meeting_dt is an optional datetime at which the meetings will start
         """
         raise NotImplementedError
 
@@ -38,13 +39,10 @@ class GCSchedule(Schedule):
 
         raise KeyError("Cannot identify user from name: {}".format(full_name))
 
-    def create_meeting(self, pair, calendar_access, directory_access):
+    def create_meeting(self, pair, meeting_start, meeting_end, calendar_access, directory_access):
         email_1 = self.get_gc_email(directory_access, pair[0])
         email_2 = self.get_gc_email(directory_access, pair[1])
 
-        now = datetime.now()
-        meeting_start = str(datetime(now.year, now.month, now.day + 7, 10, 30, 0))
-        meeting_end = str(datetime(now.year, now.month, now.day + 7, 11, 0, 0))
         start_doc = {'date': meeting_start.split(' ')[0], 'timezone': 'America/New_York', 'datetime': meeting_start}
         end_doc = {'date': meeting_end.split(' ')[0], 'timezone': 'America/New_York', 'datetime': meeting_end}
 
@@ -60,7 +58,7 @@ class GCSchedule(Schedule):
                                         body=body,
                                         sendNotifications=True).execute()
 
-    def schedule(self, pairs):
+    def schedule(self, pairs, meeting_dt=None):
         """
             This schedule function is built around Googles Api. Its goal is to schedule
             google calendar events for each set of pairs. To do this it uses the following
@@ -68,12 +66,21 @@ class GCSchedule(Schedule):
                 Google Calendar: https://developers.google.com/google-apps/calendar/?hl=en
                 Google Directory: https://developers.google.com/admin-sdk/directory/
             It also makes use of Google Service Accounts: https://developers.google.com/identity/protocols/OAuth2ServiceAccount
+            If meeting_dt is not passed, assume that the meetings should be schedule a week from today at 10 a.m.
         """
+        if meeting_dt is None:
+            now = datetime.now()
+            meeting_start = str(datetime(now.year, now.month, now.day + 7, 10, 30, 0))
+            meeting_end = str(datetime(now.year, now.month, now.day + 7, 11, 0, 0))
+        else:
+            meeting_start = str(meeting_dt)
+            meeting_end = str(datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute + 30))
+
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         calendar_access = discovery.build('calendar', 'v3', http=http)
         directory_access = discovery.build('admin', 'directory_v1', http=http)
 
         for pair in pairs:
-            self.create_meeting(pair, calendar_access, directory_access)
+            self.create_meeting(pair, meeting_start, meeting_end, calendar_access, directory_access)
 
