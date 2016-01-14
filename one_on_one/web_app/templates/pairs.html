@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+    <script>
+    $(function() {
+         $( "#calendar" ).datepicker();
+    });
+    </script>
+
     <div class="container">
         <div class="jumbotron" style="background:#5bc0de !important">
             <h1>Peer One on One</h1>
@@ -20,14 +27,24 @@
             </div>
         </font>
         <br>
-        <row>
-            <div class="col-md-5"></div>
-            <div class="col-md-1">
+            <div>
                 <form action="{{ url_for('schedule') }}" method="post">
                     <input type="hidden" name="pairs" value="{{ pairs_string }}"></input>
-                    <input type="submit" value="Schedule Meetings" class="btn-lg btn-primary">
+                    <row>
+                        <div class="col-md-4"></div>
+                        <div><strong>Enter a suggested date for the one on ones to happen</strong></div>
+                    </row>
+                    <row>
+                        <div class="col-md-5"></div>
+                        <input type="date" name="meeting_date"></input>
+                    </row>
+                    <br> <br>
+                    <row>
+                        <div class="col-md-5"></div>
+                        <input type="submit" value="Schedule Meetings" class="btn-lg btn-primary">
+                    </row>
                 </form>
             </div>
-        </row>
     </div>
+
 {% endblock %}
