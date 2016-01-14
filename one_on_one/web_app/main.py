@@ -5,9 +5,9 @@ from one_on_one.group import GCGroup
 from one_on_one.pair import GCPair
 from one_on_one.schedule import GCSchedule
 
-group_class = GCGroup
-pair_class = GCPair
-schedule_class = GCSchedule
+group_instance = GCGroup()
+pair_instance = GCPair()
+schedule_instance = GCSchedule()
 
 app = Flask(__name__)
 
@@ -17,19 +17,19 @@ def home():
 
 @app.route('/people')
 def people():
-    group = group_class().get()
+    group = group_instance.get()
     return render_template("people.html", group=group, group_string=json.dumps(group))
 
-@app.route('/pair', methods=["POST"])
-def pair():
+@app.route('/pairs', methods=["POST"])
+def pairs():
     group = json.loads(request.form["group"])
-    pairs = GCPair().get_pairs(group)
+    pairs = pair_instance.get_pairs(group)
     return render_template("pairs.html", pairs=pairs, pairs_string=json.dumps(pairs))
 
 @app.route('/schedule', methods=["POST"])
 def schedule():
     pairs = json.loads(request.form["pairs"])
-    schedule_class().schedule(pairs)
+    schedule_instance.schedule(pairs)
     return render_template("schedule.html")
 
 if __name__ == "__main__":
