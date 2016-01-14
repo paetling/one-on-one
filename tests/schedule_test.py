@@ -22,6 +22,20 @@ class TestGCSchedule(TestCase):
                                                              call(customer='my_customer', query="name:Alex"),
                                                              call().execute()])
 
+    def test_get_gc_email_no_type_error(self):
+        fake_directory_access = Mock()
+        fake_directory_access.users().list().execute.return_value = {}
+
+        with self.assertRaises(KeyError):
+            self.gc_schedule.get_gc_email(fake_directory_access, 'Alex Etling')
+        fake_directory_access.users().list.assert_has_calls([call(),
+                                                             call(customer='my_customer', query="name:Alex Etling"),
+                                                             call().execute(),
+                                                             call(customer='my_customer', query="name:Etling"),
+                                                             call().execute(),
+                                                             call(customer='my_customer', query="name:Alex"),
+                                                             call().execute()])
+
     @patch('one_on_one.schedule.datetime')
     def test_create_meeting(self, fake_datetime):
         fake_directory_access = Mock()

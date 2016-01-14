@@ -33,8 +33,9 @@ class GCSchedule(object):
 
         for name in [full_name, last_name, first_name]:
             results = directory_access.users().list(customer='my_customer', query="name:{}".format(name)).execute()
-            if len(results.get('users')) == 1:
+            if len(results.get('users', [])) == 1:
                 return results['users'][0]['emails'][0]['address']
+
         raise KeyError("Cannot identify user from name: {}".format(full_name))
 
     def create_meeting(self, pair, calendar_access, directory_access):

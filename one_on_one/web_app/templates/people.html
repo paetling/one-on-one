@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Peer One on One</h1>
+        </div>
+        <h2>
+            People available for one on ones
+        </h2>
+        <font size="+2">
+            <p class="col-lg-6 pre-scrollable">
+                {% for group, people in group.iteritems() %}<strong>{{ group }}:</strong><br>
+                    {% for person in people %}
+                        {{ person }}<br>
+                    {% endfor %}
+                {% endfor %}
+            </p>
+        </font>
+        <form action="{{ url_for('pair') }}" method="post">
+            <input type="hidden" name="group" value="{{ group_string }}"></input>
+            <input type="submit" value="Pair People" class="btn-lg btn-primary">
+        </form>
+    </div>
+{% endblock %}
