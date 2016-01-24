@@ -41,5 +41,5 @@ def schedule():
 
 if __name__ == "__main__":
     app.run(host=os.getenv('ONE_ON_ONE_IP') or '127.0.0.1',
-            port=os.getenv('ONE_ON_ONE_PORT') or 80,
+            port=int(os.getenv('ONE_ON_ONE_PORT')) or 80,
             threaded=True)
