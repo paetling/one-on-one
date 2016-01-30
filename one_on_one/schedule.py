@@ -1,5 +1,5 @@
 import httplib2
-from datetime import datetime
+import datetime
 
 from oauth2client.client import SignedJwtAssertionCredentials
 from apiclient import discovery
@@ -69,18 +69,17 @@ class GCSchedule(Schedule):
             If meeting_dt is not passed, assume that the meetings should be schedule a week from today at 10 a.m.
         """
         if meeting_dt is None:
-            now = datetime.now()
-            meeting_start = str(datetime(now.year, now.month, now.day + 7, 10, 30, 0))
-            meeting_end = str(datetime(now.year, now.month, now.day + 7, 11, 0, 0))
+            now = datetime.datetime.now()
+            one_week_from_now = now + datetime.timedelta(7)
+            meeting_start = str(datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 10, 30, 0))
+            meeting_end = str(datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 11, 0, 0))
         else:
             meeting_start = str(meeting_dt)
-            meeting_end = str(datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute + 30, meeting_dt.second))
-
+            meeting_end = str(datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute + 30, meeting_dt.second))
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         calendar_access = discovery.build('calendar', 'v3', http=http)
         directory_access = discovery.build('admin', 'directory_v1', http=http)
-
         for pair in pairs:
             self.create_meeting(pair, meeting_start, meeting_end, calendar_access, directory_access)
 
