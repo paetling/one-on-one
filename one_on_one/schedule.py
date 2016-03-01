@@ -24,7 +24,7 @@ class GCSchedule(Schedule):
                                                     private_key,
                                                     ['https://www.googleapis.com/auth/calendar',
                                                      'https://www.googleapis.com/auth/admin.directory.user.readonly'],
-                                                     sub='kristin@gc.com')
+                                                     sub='jenny@gc.io')
         return credentials
 
     def get_real_name(self, full_name):
@@ -49,8 +49,8 @@ class GCSchedule(Schedule):
         email_1 = self.get_gc_email(directory_access, self.get_real_name(pair[0]))
         email_2 = self.get_gc_email(directory_access, self.get_real_name(pair[1]))
 
-        start_doc = {'date': meeting_start.split(' ')[0], 'timezone': 'America/New_York', 'datetime': meeting_start}
-        end_doc = {'date': meeting_end.split(' ')[0], 'timezone': 'America/New_York', 'datetime': meeting_end}
+        start_doc = {'timeZone': 'America/New_York', 'dateTime': meeting_start}
+        end_doc = {'timeZone': 'America/New_York', 'dateTime': meeting_end}
 
         attendees = [{'email': email_1}, {'email': email_2}]
 
@@ -77,11 +77,13 @@ class GCSchedule(Schedule):
         if meeting_dt is None:
             now = datetime.datetime.now()
             one_week_from_now = now + datetime.timedelta(7)
-            meeting_start = str(datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 10, 30, 0))
-            meeting_end = str(datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 11, 0, 0))
+            meeting_start = datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 10, 30, 0).isoformat()
+            meeting_end = datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 11, 0, 0).isoformat()
         else:
-            meeting_start = str(meeting_dt)
-            meeting_end = str(datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute + 30, meeting_dt.second))
+            dt_start = datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute, meeting_dt.second)
+            dt_end = datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute, meeting_dt.second)
+            meeting_start = dt_start.isoformat()
+            meeting_end = dt_end.isoformat()
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         calendar_access = discovery.build('calendar', 'v3', http=http)
