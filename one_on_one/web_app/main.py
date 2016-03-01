@@ -11,6 +11,7 @@ pair_instance = GCPair()
 schedule_instance = GCSchedule()
 
 app = Flask(__name__)
+app.config.update(PROPAGATE_EXCEPTIONS=True)
 
 @app.route('/')
 def home():

@@ -14,6 +14,7 @@ class Schedule(object):
         raise NotImplementedError
 
 class GCSchedule(Schedule):
+    name_mappings = {'Jenny from the Lair': 'Jenny Trumbull'}
     @staticmethod
     def get_credentials():
         client_email = 'one-on-one-account@windy-raceway-118617.iam.gserviceaccount.com'
@@ -25,6 +26,11 @@ class GCSchedule(Schedule):
                                                      'https://www.googleapis.com/auth/admin.directory.user.readonly'],
                                                      sub='kristin@gc.com')
         return credentials
+
+    def get_real_name(self, full_name):
+        if full_name in self.name_mappings:
+            return self.name_mappings[full_name]
+        return full_name
 
     @staticmethod
     def get_gc_email(directory_access, full_name):
@@ -40,8 +46,8 @@ class GCSchedule(Schedule):
         raise KeyError("Cannot identify user from name: {}".format(full_name))
 
     def create_meeting(self, pair, meeting_start, meeting_end, calendar_access, directory_access):
-        email_1 = self.get_gc_email(directory_access, pair[0])
-        email_2 = self.get_gc_email(directory_access, pair[1])
+        email_1 = self.get_gc_email(directory_access, self.get_real_name(pair[0]))
+        email_2 = self.get_gc_email(directory_access, self.get_real_name(pair[1]))
 
         start_doc = {'date': meeting_start.split(' ')[0], 'timezone': 'America/New_York', 'datetime': meeting_start}
         end_doc = {'date': meeting_end.split(' ')[0], 'timezone': 'America/New_York', 'datetime': meeting_end}
