@@ -11,6 +11,7 @@ class Group(object):
         raise NotImplementedError
 
 class GCGroup(Group):
+    BLACK_LIST = ['Tom Leach', 'Patricia Wintermuth', 'Spencer Wright', 'Sean Wheeler']
     GC_URL = 'https://gc.com/team'
 
     def get(self):
@@ -31,6 +32,7 @@ class GCGroup(Group):
                 employee_group = employee_groups[i]
                 for employee in employee_group.find_class('yui3-u-1-5'):
                     links = list(employee.iterlinks())
-                    name_link = links[1][0]
-                    return_dict[group.text_content().strip()].append(name_link.text_content().strip())
+                    name = links[1][0].text_content().strip()
+                    if name not in self.BLACK_LIST:
+                        return_dict[group.text_content().strip()].append(name)
         return return_dict
