@@ -60,7 +60,7 @@ class GCSchedule(Schedule):
                 'summary': 'Peer One on One: {} and {}'.format(pair[0], pair[1]),
                 'description': 'This is a chance to meet and talk with someone else at GC. If you are not sure what to talk about, consult this link: http://jasonevanish.com/2014/05/29/101-questions-to-ask-in-1-on-1s/'}
 
-        calendar_access.events().insert(calendarId='gamechanger.io_8ag52p72ocos9b61g7tcdt98ds@group.calendar.google.com',
+        calendar_access.events().insert(calendarId='gamechanger.io_pvrnqe6amftma1ful6vou0ctmo@group.calendar.google.com',
                                         body=body,
                                         sendNotifications=True).execute()
 
