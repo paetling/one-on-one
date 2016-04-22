@@ -120,7 +120,7 @@ class GCPair(Pair):
         return pairs
 
     def get_pairs(self, group_dict, exclude_list=[]):
-        return self.get_pairs_not_your_group(group_dict, exclude_list)
+        return self.get_pairs_pure_random(group_dict, exclude_list)
 
 
 
