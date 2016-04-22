@@ -13,9 +13,14 @@ class Pair(object):
         """
             This function is made to be subclassed. It takes
             in a dictionary with a structure described in Group.get().
-            It outputs a list of tuples. Each tuple contains 2 names who should
-            be paired together for a meeting
             Exclude_list is a list of names that should not be included in the pairings
+            It outputs a dictionary of the following format:
+            {
+                'pairs':  list of tuples. Each tuple contains 2 names who should
+            be paired together for a meeting,
+                'no_pair': If there is someone in your organization who could not be paired
+            defaults to None if there is no such person
+            }
         """
         raise NotImplementedError
 
@@ -73,6 +78,7 @@ class GCPair(Pair):
                     randomly match those people to each other.
         """
         pairs = []
+        left_over = None
         groups = group_dict.keys()
         copy_group_dict = deepcopy(group_dict)
         self.remove_excluded_people(copy_group_dict, exclude_list)
@@ -87,6 +93,7 @@ class GCPair(Pair):
                     person2 = self.random_from_group_dict(copy_group_dict, exclude_people=[person1])
                     pairs.append((person1, person2))
                 if len(group) > 0:
+                    left_over = group[0]
                     print 'Not enough people. So this week {} does not have a pair'.format(group[0])
                 break
             else:
@@ -100,7 +107,7 @@ class GCPair(Pair):
                     else:
                         break
                 self.remove_all_empty_groups(copy_group_dict)
-        return pairs
+        return {'pairs': pairs, 'no_pair': left_over}
 
     def get_all_people(self, group_dict, exclude_list=[]):
         people = []
@@ -117,7 +124,7 @@ class GCPair(Pair):
             person_1 = all_people.pop(random.randint(0, len(all_people) - 1))
             person_2 = all_people.pop(random.randint(0, len(all_people) - 1))
             pairs.append((person_1, person_2))
-        return pairs
+        return {'pairs': pairs, 'no_pair': all_people[0] if len(all_people) > 0 else None}
 
     def get_pairs(self, group_dict, exclude_list=[]):
         return self.get_pairs_pure_random(group_dict, exclude_list)

@@ -14,8 +14,13 @@
             <p>This page lists a proposed list of all pairs</p>
         </div>
         <font size="+2">
+            {% if pairs_doc.no_pair%}
             <div>
-                {% for pair in pairs %}
+                This week we had an odd number of people. <strong>{{pairs_doc.no_pair}}</strong> will not be scheduled for a one one one. He or she will be emailed.
+            </div>
+            {% endif %}
+            <div>
+                {% for pair in pairs_doc.pairs %}
                     <row>
                         <div class="col-md-2"></div>
                         <div class="col-md-3">{{ pair[0] }}</div>
@@ -29,7 +34,7 @@
         <br>
             <div>
                 <form action="{{ url_for('schedule') }}" method="post">
-                    <input type="hidden" name="pairs" value="{{ pairs_string }}"></input>
+                    <input type="hidden" name="pairs_doc" value="{{ pairs_doc_string }}"></input>
                     <row>
                         <div class="col-md-4"></div>
                         <div><strong>Enter a suggested date for the one on ones to happen</strong></div>

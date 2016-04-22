@@ -28,16 +28,16 @@ def pairs():
     exclude_list_string = request.form["exclude_list"].rstrip('\n\t ')
     exclude_list = map(lambda input: input.strip(), exclude_list_string.split(',') if exclude_list_string else [])\
 
-    pairs = pair_instance.get_pairs(group, exclude_list=exclude_list)
-    return render_template("pairs.html", pairs=pairs, pairs_string=json.dumps(pairs))
+    pairs_doc = pair_instance.get_pairs(group, exclude_list=exclude_list)
+    return render_template("pairs.html", pairs_doc=pairs_doc, pairs_doc_string=json.dumps(pairs_doc))
 
 @app.route('/schedule', methods=["POST"])
 def schedule():
-    pairs = json.loads(request.form["pairs"])
+    pairs_doc = json.loads(request.form["pairs_doc"])
     meeting_date_string = request.form["meeting_date"]
     meeting_dt = arrow.get(meeting_date_string).datetime if meeting_date_string else None
 
-    schedule_instance.schedule(pairs, meeting_dt=meeting_dt)
+    schedule_instance.schedule(pairs_doc['pairs'], no_pair=pairs_doc['no_pair'], meeting_dt=meeting_dt)
     return render_template("schedule.html")
 
 if __name__ == "__main__":

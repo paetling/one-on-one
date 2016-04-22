@@ -5,10 +5,11 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from apiclient import discovery
 
 class Schedule(object):
-    def schedule(self, pairs, meeting_dt=None):
+    def schedule(self, pairs, no_pair=None, meeting_dt=None):
         """ This method is made to be overwritten by subclasses.
             It should take in a list of pairs, and schedule a meeting between
             the pairs of people
+            no_pair is an optional argument which represents a person who did not have a pair
             meeting_dt is an optional datetime at which the meetings will start
         """
         raise NotImplementedError
@@ -64,7 +65,7 @@ class GCSchedule(Schedule):
                                         body=body,
                                         sendNotifications=True).execute()
 
-    def schedule(self, pairs, meeting_dt=None):
+    def schedule(self, pairs, no_pair=None, meeting_dt=None):
         """
             This schedule function is built around Googles Api. Its goal is to schedule
             google calendar events for each set of pairs. To do this it uses the following
