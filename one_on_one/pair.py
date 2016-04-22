@@ -62,7 +62,7 @@ class GCPair(Pair):
         for remove_key in remove_keys:
             del group_dict[remove_key]
 
-    def get_pairs(self, group_dict, exclude_list=[]):
+    def get_pairs_not_your_group(self, group_dict, exclude_list=[]):
         """
             This function implements a random of grouping of people across teams. The algorithm
             is as follows:
@@ -101,6 +101,26 @@ class GCPair(Pair):
                         break
                 self.remove_all_empty_groups(copy_group_dict)
         return pairs
+
+    def get_all_people(self, group_dict, exclude_list=[]):
+        people = []
+        for group_key, group in group_dict.iteritems():
+            for person in group:
+                if person not in exclude_list:
+                    people.append(person)
+        return people
+
+    def get_pairs_pure_random(self, group_dict, exclude_list=[]):
+        pairs = []
+        all_people = self.get_all_people(group_dict, exclude_list)
+        while (len(all_people) > 1):
+            person_1 = all_people.pop(random.randint(0, len(all_people) - 1))
+            person_2 = all_people.pop(random.randint(0, len(all_people) - 1))
+            pairs.append((person_1, person_2))
+        return pairs
+
+    def get_pairs(self, group_dict, exclude_list=[]):
+        return self.get_pairs_not_your_group(group_dict, exclude_list)
 
 
 

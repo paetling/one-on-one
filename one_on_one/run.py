@@ -12,7 +12,7 @@ schedule = GCSchedule()
 group_dict = group.get()
 print group_dict
 
-pairs = pair.get_pairs(group_dict)
+pairs = pair.get_pairs_not_your_group(group_dict)
 print pairs
 
 test_pairs = [('Alex Etling', 'Ursula Lopez-Palm')]

@@ -45,8 +45,8 @@ class TestGCSchedule(TestCase):
         fake_get_gc_email.side_effect = ["alex@gc.com", "bob@gc.com"]
 
         expected_body = {'attendees': [{'email': 'alex@gc.com'}, {'email': 'bob@gc.com'}],
-                         'start': {'date': '2016-01-01', 'timezone': 'America/New_York', 'datetime': '2016-01-01 10:00:00'},
-                         'end': {'date': '2016-01-01', 'timezone': 'America/New_York', 'datetime': '2016-01-01 10:30:00'},
+                         'start': {'timeZone': 'America/New_York', 'dateTime': '2016-01-01 10:00:00'},
+                         'end': {'timeZone': 'America/New_York', 'dateTime': '2016-01-01 10:30:00'},
                          'summary': 'Peer One on One: Alex Etling and Bob Notreal',
                          'description': 'This is a chance to meet and talk with someone else at GC. If you are not sure what to talk about, consult this link: http://jasonevanish.com/2014/05/29/101-questions-to-ask-in-1-on-1s/'}
 
@@ -55,7 +55,7 @@ class TestGCSchedule(TestCase):
                                         '2016-01-01 10:30:00',
                                         fake_calendar_access,
                                         fake_directory_access)
-        fake_calendar_access.events().insert.assert_has_calls([call(calendarId='gamechanger.io_8ag52p72ocos9b61g7tcdt98ds@group.calendar.google.com',
+        fake_calendar_access.events().insert.assert_has_calls([call(calendarId='gamechanger.io_pvrnqe6amftma1ful6vou0ctmo@group.calendar.google.com',
                                                                     body=expected_body,
                                                                     sendNotifications=True),
                                                                call().execute()])

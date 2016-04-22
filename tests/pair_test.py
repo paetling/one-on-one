@@ -117,39 +117,39 @@ class TestGCGroup(TestCase):
             if pair[0] in group_dict['marketing']:
                 self.assertIn(pair[1], group_dict['design'] + group_dict['engineers'])
 
-    def test_get_pairs_1(self):
+    def test_get_pairs_not_your_group_1(self):
         group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
                       'design': ['girl2', 'guy3'],
                       'marketing': ['girl3']}
-        pairs = self.gc_pair.get_pairs(group_dict)
+        pairs = self.gc_pair.get_pairs_not_your_group(group_dict)
         self.assertEquals(len(pairs), 3)
         self.assert_grouping(group_dict, pairs)
 
 
-    def test_get_pairs_2(self):
+    def test_get_pairs_not_your_group_2(self):
         group_dict = {'engineers': ['guy1', 'girl1', 'guy2', 'girl4'],
                       'design': ['girl2', 'guy3'],
                       'marketing': ['girl3']}
-        pairs = self.gc_pair.get_pairs(group_dict)
+        pairs = self.gc_pair.get_pairs_not_your_group(group_dict)
         self.assert_grouping(group_dict, pairs)
         self.assertEquals(len(pairs), 3)
 
-    def test_get_pairs_3(self):
+    def test_get_pairs_not_your_group_3(self):
         group_dict = {'engineers': ['guy1', 'girl1', 'guy2', 'girl2', 'guy3', 'girl3']}
-        pairs = self.gc_pair.get_pairs(group_dict)
+        pairs = self.gc_pair.get_pairs_not_your_group(group_dict)
         self.assertEquals(len(pairs), 3)
 
-    def test_get_pairs_4(self):
+    def test_get_pairs_not_your_group_4(self):
         group_dict = {'engineers': ['guy1', 'girl1', 'guy2', 'girl2', 'guy3', 'girl3', 'girl4']}
-        pairs = self.gc_pair.get_pairs(group_dict)
+        pairs = self.gc_pair.get_pairs_not_your_group(group_dict)
         self.assertEquals(len(pairs), 3)
 
-    def test_get_pairs_5(self):
+    def test_get_pairs_not_your_group_5(self):
         group_dict = {'engineers': ['guy1', 'girl1', 'guy2', 'girl2', 'guy3'],
                       'design': ['girl3', 'guy4', 'girl4'],
                       'marketing': ['guy5', 'girl5', 'guy6'],
                       'other': ['girl6', 'guy7', 'girl7']}
-        pairs = self.gc_pair.get_pairs(group_dict)
+        pairs = self.gc_pair.get_pairs_not_your_group(group_dict)
         self.assertEquals(len(pairs), 7)
         print pairs
         for pair in pairs:
@@ -159,10 +159,10 @@ class TestGCGroup(TestCase):
         for pair in pairs:
             self.assertIn(pair[1], group_dict['design'] + group_dict['marketing'] + group_dict['other'])
 
-    def test_get_pairs_6(self):
+    def test_get_pairs_not_your_group_6(self):
         group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
                       'marketing': ['girl2']}
-        pairs = self.gc_pair.get_pairs(group_dict)
+        pairs = self.gc_pair.get_pairs_not_your_group(group_dict)
         self.assertEquals(len(pairs), 2)
 
     def test_remove_excluded_people_1(self):
@@ -188,3 +188,81 @@ class TestGCGroup(TestCase):
                          'marketing': []}
         self.gc_pair.remove_excluded_people(group_dict, ['girl1', 'girl2'])
         self.assertEquals(group_dict, expected_dict)
+
+    def test_get_all_people1(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2']}
+        self.assertEquals(set(self.gc_pair.get_all_people(group_dict)), set(['guy1', 'girl1', 'guy2', 'girl2']))
+
+    def test_get_all_people2(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other': ['guy3', 'girl3', 'guy4']}
+        self.assertEquals(set(self.gc_pair.get_all_people(group_dict)), set(['guy1', 'girl1', 'guy2', 'girl2', 'guy3', 'girl3', 'guy4']))
+
+    def test_get_all_people3(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other': ['guy3', 'girl3', 'guy4']}
+        self.assertEquals(set(self.gc_pair.get_all_people(group_dict, ['guy1', 'girl3'])), set(['girl1', 'guy2', 'girl2', 'guy3', 'guy4']))
+
+    def test_get_all_people4(self):
+        group_dict = {}
+        self.assertEquals(set(self.gc_pair.get_all_people(group_dict)), set([]))
+
+    def test_get_pairs_pure_random1(self):
+      group_dict = {}
+      self.assertEquals([], self.gc_pair.get_pairs_pure_random(group_dict))
+
+    def test_get_pairs_pure_random2(self):
+      group_dict = {'engineers': ['guy1', 'girl1', 'guy2']}
+      possible_outcomes = [[('guy1', 'girl1')],
+                           [('guy1', 'guy2')],
+                           [('girl1', 'guy1')],
+                           [('girl1', 'guy2')],
+                           [('guy2', 'guy1')],
+                           [('guy2', 'girl1')]
+                    ]
+      self.assertTrue(self.gc_pair.get_pairs_pure_random(group_dict) in possible_outcomes)
+
+    def test_get_pairs_pure_random3(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other': ['guy3', 'girl3', 'guy4']}
+        outcome = self.gc_pair.get_pairs_pure_random(group_dict)
+        self.assertTrue(len(outcome), 3)
+
+    def test_get_pairs_pure_random4(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other': ['guy3', 'girl3', 'guy4', 'girl4']}
+        outcome = self.gc_pair.get_pairs_pure_random(group_dict)
+        self.assertTrue(len(outcome), 4)
+
+    def test_get_pairs_pure_random5(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other1': ['guy3', 'girl3', 'guy4', 'girl4'],
+                      'other2': ['guy4', 'girl4', 'guy5', 'girl5', 'guy6', 'girl6', 'guy7', 'girl7']}
+        outcome = self.gc_pair.get_pairs_pure_random(group_dict)
+        self.assertTrue(len(outcome), 7)
+
+    def test_get_pairs_pure_random6(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other1': ['guy3', 'girl3', 'guy4', 'girl4'],
+                      'other2': ['guy4', 'girl4', 'guy5', 'girl5', 'guy6', 'girl6', 'guy7', 'girl7']}
+        outcome = self.gc_pair.get_pairs_pure_random(group_dict, ["guy1", "girl3", "guy5"])
+        self.assertTrue(len(outcome), 5)
+
+    def test_get_pairs_pure_random7(self):
+        group_dict = {'engineers': ['guy1', 'girl1', 'guy2'],
+                      'marketing': ['girl2'],
+                      'other1': ['guy3', 'girl3', 'guy4', 'girl4'],
+                      'other2': ['guy4', 'girl4', 'guy5', 'girl5', 'guy6', 'girl6', 'guy7', 'girl7']}
+        outcome = self.gc_pair.get_pairs_pure_random(group_dict, ["guy1", "girl3", "guy5", "girl7"])
+        self.assertTrue(len(outcome), 5)
+
+
+
+

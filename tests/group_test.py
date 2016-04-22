@@ -6,9 +6,7 @@ class TestGCGroup(TestCase):
         gc_group = GCGroup()
         gc_group.GC_URL = 'https://web.archive.org/web/20150319083649/https://gc.com/team'
         expected_group = {'BUSINESS DEV & PARTNERSHIPS': ['Jeff Kamrath'],
-                          'MARKETING': ['Sean Wheeler',
-                                        'Spencer Wright',
-                                        'Kyleigh Callender',
+                          'MARKETING': ['Kyleigh Callender',
                                         'Wellington Smith',
                                         'David Kennedy',
                                         'Crawford Roark',
@@ -33,7 +31,6 @@ class TestGCGroup(TestCase):
                           'ENGINEERS': ['Jerry Hsu',
                                         'Ben Yelsey',
                                         'Travis Thieman',
-                                        'Tom Leach',
                                         'Brian Bernberg',
                                         'Nick Schultz',
                                         'Scott Morse',
