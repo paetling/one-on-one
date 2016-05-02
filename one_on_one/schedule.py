@@ -42,11 +42,17 @@ class GCSchedule(Schedule):
         first_name = split_names[0]
         last_name = split_names[1]
 
+        #Hope to uniquely identify first
         for name in [full_name, last_name, first_name]:
             results = directory_access.users().list(customer='my_customer', query="name:{}".format(name)).execute()
             if len(results.get('users', [])) == 1:
                 return results['users'][0]['emails'][0]['address']
 
+        # If you cannot uniquely identify just grab the first email for that users name
+        for name in [full_name, last_name, first_name]:
+            results = directory_access.users().list(customer='my_customer', query="name:{}".format(name)).execute()
+            if len(results.get('users', [])) > 1:
+                return results['users'][0]['emails'][0]['address']
         raise KeyError("Cannot identify user from name: {}".format(full_name))
 
     def create_meeting(self, pair, meeting_start, meeting_end, calendar_access, directory_access):
