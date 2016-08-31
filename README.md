@@ -16,4 +16,4 @@ Follow these steps to run and test locally
 * In this repo run `pip install -r requirements.txt; pip install -r test_requirements.txt`
 * Run `export PYTHONPATH=$PYTHONPATH; python one_on_one/web_app/main.py`
 
-Note: You might need to run the web app on a different port then 80. You can do this by setting the environment variable: `ONE_ON_ONE_PORT`
+Note: You might need to run the web app on a different port then 80. You can do this by setting the environment variable: `ONE_ON_ONE_PORT` -> (`export ONE_ON_ONE_PORT=8000`)
