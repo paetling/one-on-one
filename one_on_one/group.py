@@ -13,18 +13,26 @@ class Group(object):
         raise NotImplementedError
 
 class GCGroup(Group):
-    BLACK_LIST = ['Tom Leach', 'Patricia Wintermuth', 'Spencer Wright', 'Sean Wheeler']
+    BLACK_LIST = ['Patricia Wintermuth', 'Sean Wheeler']
     GC_URL = 'https://gc.com/team'
 
     def get(self):
         """
             This method does a simply web scrape of GC_URL with an attempt to grab each employee at
-            GameChanger's name. Excludes executives.
+            GameChanger's name.
         """
         return_dict = defaultdict(list)
         page = requests.get(self.GC_URL)
         html_element = html.fromstring(page.content)
 
+        # Executives
+        execs = html_element.find_class('execs')[0]
+        for name_span in execs.find_class('name'):
+            name = name_span.text.strip()
+            if name not in BLACK_LIST:
+                return_dict['Executives'].append(name)
+
+        # Non-executives
         for container in html_element.find_class('teamNameContainer'):
             name = container.find_class('name')[0].text.strip()
             group = container.find_class('position')[0].text.strip()
