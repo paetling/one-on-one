@@ -29,7 +29,7 @@ class GCGroup(Group):
         execs = html_element.find_class('execs')[0]
         for name_span in execs.find_class('name'):
             name = name_span.text.strip()
-            if name not in BLACK_LIST:
+            if name not in self.BLACK_LIST:
                 return_dict['Executives'].append(name)
 
         # Non-executives
