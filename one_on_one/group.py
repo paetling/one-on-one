@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from lxml import html
 import requests
 
@@ -11,28 +13,30 @@ class Group(object):
         raise NotImplementedError
 
 class GCGroup(Group):
-    BLACK_LIST = ['Tom Leach', 'Patricia Wintermuth', 'Spencer Wright', 'Sean Wheeler']
+    BLACK_LIST = ['Patricia Wintermuth', 'Sean Wheeler']
     GC_URL = 'https://gc.com/team'
 
     def get(self):
         """
             This method does a simply web scrape of GC_URL with an attempt to grab each employee at
-            GameChanger's name
+            GameChanger's name.
         """
-        return_dict = {}
+        return_dict = defaultdict(list)
         page = requests.get(self.GC_URL)
         html_element = html.fromstring(page.content)
-        groups = html_element.find_class('plm')
-        employee_groups = html_element.find_class('pls')
 
-        for i,group in enumerate(groups):
-            group_name = group.text_content().strip()
-            if group_name != 'CUSTOMER SUPPORT':
-                return_dict[group.text_content().strip()] = []
-                employee_group = employee_groups[i]
-                for employee in employee_group.find_class('yui3-u-1-5'):
-                    links = list(employee.iterlinks())
-                    name = links[1][0].text_content().strip()
-                    if name not in self.BLACK_LIST:
-                        return_dict[group.text_content().strip()].append(name)
+        # Executives
+        execs = html_element.find_class('execs')[0]
+        for name_span in execs.find_class('name'):
+            name = name_span.text.strip()
+            if name not in BLACK_LIST:
+                return_dict['Executives'].append(name)
+
+        # Non-executives
+        for container in html_element.find_class('teamNameContainer'):
+            name = container.find_class('name')[0].text.strip()
+            group = container.find_class('position')[0].text.strip()
+            if name not in self.BLACK_LIST:
+                return_dict[group].append(name)
+
         return return_dict
