@@ -18,7 +18,7 @@ class Schedule(object):
 
 class GCSchedule(Schedule):
     name_mappings = {'Jenny from the Lair': 'Jenny Trumbull'}
-    jenny_email = 'jenny@gc.io'
+    keira_email = 'keira@gc.com'
     def get_credentials(self):
         client_email = 'one-on-one-account@windy-raceway-118617.iam.gserviceaccount.com'
         with open("ConvertedPrivateKey.pem") as f:
@@ -28,7 +28,7 @@ class GCSchedule(Schedule):
                                                     ['https://www.googleapis.com/auth/calendar',
                                                      'https://www.googleapis.com/auth/admin.directory.user.readonly',
                                                      'https://mail.google.com/'],
-                                                     sub=self.jenny_email)
+                                                     sub=self.keira_email)
         return credentials
 
     def get_real_name(self, full_name):
@@ -79,7 +79,7 @@ class GCSchedule(Schedule):
         message_text = "Hello {},\nThis week we had an odd number of people for peer one on ones.  That means one person did not get paired up with someone.  You happen to be that person this week. You should be paired up again next time!\n\nLet Jenny or Alex know if you have any questions.".format(user_name)
         message = MIMEText(message_text)
         message['to'] = user_email
-        message['from'] = self.jenny_email
+        message['from'] = self.keira_email
         message['subject'] = "Peer One on Ones this week"
         encodeMessage = {'raw': base64.urlsafe_b64encode(message.as_string())}
         mail_access.users().messages().send(userId='me', body=encodeMessage).execute()
