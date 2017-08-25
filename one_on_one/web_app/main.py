@@ -35,9 +35,10 @@ def pairs():
 def schedule():
     pairs_doc = json.loads(request.form["pairs_doc"])
     meeting_date_string = request.form["meeting_date"]
+    extra_meeting_message = request.form['extra_meeting_message']
     meeting_dt = arrow.get(meeting_date_string).datetime if meeting_date_string else None
 
-    schedule_instance.schedule(pairs_doc['pairs'], no_pair=pairs_doc['no_pair'], meeting_dt=meeting_dt)
+    schedule_instance.schedule(pairs_doc['pairs'], no_pair=pairs_doc['no_pair'], meeting_dt=meeting_dt, extra_meeting_message=extra_meeting_message)
     return render_template("schedule.html")
 
 if __name__ == "__main__":

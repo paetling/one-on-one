@@ -33,7 +33,7 @@
         </font>
         <br>
             <div>
-                <form action="{{ url_for('schedule') }}" method="post">
+                <form action="{{ url_for('schedule') }}" method="post" id="schedule_attributes">
                     <input type="hidden" name="pairs_doc" value="{{ pairs_doc_string }}"></input>
                     <row>
                         <div class="col-md-4"></div>
@@ -42,6 +42,15 @@
                     <row>
                         <div class="col-md-5"></div>
                         <input type="date" name="meeting_date"></input>
+                    </row>
+                    <br> <br>
+                    <row>
+                        <div class="col-md-4"></div>
+                        <div><strong>Enter an extra message to send to recipients</strong></div>
+                    </row>
+                    <row>
+                        <div class="col-md-3"></div>
+                        <textarea name="extra_meeting_message" form="schedule_attributes" placeholder="Enter a message to send to meeting invitees" rows=3 cols=70></textarea>
                     </row>
                     <br> <br>
                     <row>

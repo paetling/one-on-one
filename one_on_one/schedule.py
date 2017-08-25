@@ -7,7 +7,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from apiclient import discovery
 
 class Schedule(object):
-    def schedule(self, pairs, no_pair=None, meeting_dt=None):
+    def schedule(self, pairs, no_pair=None, meeting_dt=None, extra_meeting_message=""):
         """ This method is made to be overwritten by subclasses.
             It should take in a list of pairs, and schedule a meeting between
             the pairs of people
@@ -55,7 +55,14 @@ class GCSchedule(Schedule):
                 return results['users'][0]['emails'][0]['address']
         raise KeyError("Cannot identify user from name: {}".format(full_name))
 
-    def create_meeting(self, pair, meeting_start, meeting_end, calendar_access, directory_access):
+
+    def _get_meeting_description(self):
+        scheduling = 'Scheduling:\nThe meeting time provided is just a suggestion. Feel free to schedule this 30 minute meeting whenever works for both participants.'
+        location = 'Location:\nTry checking out these coffee shops to talk in: https://www.yelp.com/search?find_desc=coffee+shop&find_loc=TriBeCa%2C+Manhattan%2C+NY.\nYou could also try taking a walk outside.'
+        guide = 'Guide:\nThis is a chance to meet and talk with someone else at GC. If you are not sure what to talk about, consult this link: http://jasonevanish.com/2014/05/29/101-questions-to-ask-in-1-on-1s/'
+        return '{}\n\n{}\n\n{}'.format(scheduling, location, guide)
+
+    def create_meeting(self, pair, meeting_start, meeting_end, calendar_access, directory_access, extra_meeting_message):
         email_1 = self.get_gc_email(directory_access, self.get_real_name(pair[0]))
         email_2 = self.get_gc_email(directory_access, self.get_real_name(pair[1]))
 
@@ -64,11 +71,15 @@ class GCSchedule(Schedule):
 
         attendees = [{'email': email_1}, {'email': email_2}]
 
+        description = self._get_meeting_description()
+        if extra_meeting_message != "":
+            description = 'Announcement:\n{}\n\n{}'.format(extra_meeting_message, description)
+
         body = {'attendees': attendees,
                 'start': start_doc,
                 'end': end_doc,
                 'summary': 'Peer One on One: {} and {}'.format(pair[0], pair[1]),
-                'description': 'This is a chance to meet and talk with someone else at GC. If you are not sure what to talk about, consult this link: http://jasonevanish.com/2014/05/29/101-questions-to-ask-in-1-on-1s/'}
+                'description': description}
 
         calendar_access.events().insert(calendarId='gamechanger.io_pvrnqe6amftma1ful6vou0ctmo@group.calendar.google.com',
                                         body=body,
@@ -76,7 +87,7 @@ class GCSchedule(Schedule):
 
     def send_no_meeting_email(self, user_name, mail_access, directory_access):
         user_email = self.get_gc_email(directory_access, self.get_real_name(user_name))
-        message_text = "Hello {},\nThis week we had an odd number of people for peer one on ones.  That means one person did not get paired up with someone.  You happen to be that person this week. You should be paired up again next time!\n\nLet Jenny or Alex know if you have any questions.".format(user_name)
+        message_text = "Hello {},\nThis week we had an odd number of people for peer one on ones.  That means one person did not get paired up with someone.  You happen to be that person this week. You should be paired up again next time!\n\nLet Keira know if you have any questions.".format(user_name)
         message = MIMEText(message_text)
         message['to'] = user_email
         message['from'] = self.keira_email
@@ -84,7 +95,7 @@ class GCSchedule(Schedule):
         encodeMessage = {'raw': base64.urlsafe_b64encode(message.as_string())}
         mail_access.users().messages().send(userId='me', body=encodeMessage).execute()
 
-    def schedule(self, pairs, no_pair=None, meeting_dt=None):
+    def schedule(self, pairs, no_pair=None, meeting_dt=None, extra_meeting_message=""):
         """
             This schedule function is built around Googles Api. Its goal is to schedule
             google calendar events for each set of pairs. To do this it uses the following
@@ -92,25 +103,23 @@ class GCSchedule(Schedule):
                 Google Calendar: https://developers.google.com/google-apps/calendar/?hl=en
                 Google Directory: https://developers.google.com/admin-sdk/directory/
             It also makes use of Google Service Accounts: https://developers.google.com/identity/protocols/OAuth2ServiceAccount
-            If meeting_dt is not passed, assume that the meetings should be schedule a week from today at 10 a.m.
+            If meeting_dt is not passed, assume that the meetings should be scheduled a week from today at 10 a.m.
         """
         if meeting_dt is None:
             now = datetime.datetime.now()
             one_week_from_now = now + datetime.timedelta(7)
             meeting_start = datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 10, 30, 0).isoformat()
-            meeting_end = datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 11, 0, 0).isoformat()
+            meeting_end = datetime.datetime(one_week_from_now.year, one_week_from_now.month, one_week_from_now.day, 11, 00, 0).isoformat()
         else:
-            dt_start = datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute, meeting_dt.second)
-            dt_end = datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, meeting_dt.hour, meeting_dt.minute, meeting_dt.second)
-            meeting_start = dt_start.isoformat()
-            meeting_end = dt_end.isoformat()
+            meeting_start = datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, 10, 30, 0).isoformat()
+            meeting_end = datetime.datetime(meeting_dt.year, meeting_dt.month, meeting_dt.day, 11, 00, 0).isoformat()
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         calendar_access = discovery.build('calendar', 'v3', http=http)
         directory_access = discovery.build('admin', 'directory_v1', http=http)
         mail_access = discovery.build('gmail', 'v1', http=http)
         for pair in pairs:
-            self.create_meeting(pair, meeting_start, meeting_end, calendar_access, directory_access)
+            self.create_meeting(pair, meeting_start, meeting_end, calendar_access, directory_access, extra_meeting_message)
         if no_pair:
             self.send_no_meeting_email(no_pair, mail_access, directory_access)
 
